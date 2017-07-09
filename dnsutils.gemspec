@@ -1,11 +1,11 @@
 # coding: utf-8
 lib = File.expand_path('../lib', __FILE__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
-require 'dnsutils/version'
+require 'version'
 
 Gem::Specification.new do |spec|
   spec.name          = "dnsutils"
-  spec.version       = Dnsutils::VERSION
+  spec.version       = DnsUtils::VERSION
   spec.authors       = ["iagox86"]
   spec.email         = ["ron-git@skullsecurity.org"]
 
