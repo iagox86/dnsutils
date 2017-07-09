@@ -22,6 +22,32 @@ module DnsUtils
 
   Thread.abort_on_exception = true
 
+  # Sends the query to an upstream DNS server
+  def self.do_pt(s, transaction, pt_host, pt_port)
+    # Do this in the background so it doesn't block
+    Thread.new() do
+      begin
+        result = Nesser::Nesser.query(
+          s: s,
+          hostname: transaction.request.questions[0].name,
+          server: pt_host,
+          port: pt_port,
+          type: transaction.request.questions[0].type,
+          cls: transaction.request.questions[0].cls,
+        )
+
+        if result.rcode == Nesser::RCODE_SUCCESS
+          transaction.answer!(result.answers)
+        else
+          transaction.error!(result.rcode)
+        end
+      rescue StandardError => e
+        puts("Error: #{e}")
+        transaction.error!(Nesser::RCODE_SERVER_FAILURE)
+      end
+    end
+  end
+
   # Options
   opts = Trollop::options do
     version(NAME + " " + VERSION)
@@ -30,7 +56,7 @@ module DnsUtils
     opt :host,    "The ip address to listen on",  :type => :string,  :default => "0.0.0.0"
     opt :port,    "The port to listen on",        :type => :integer, :default => 53
 
-#    opt :passthrough,   "Set to a host:port, and unanswered queries will be sent there", :type => :string, :default => nil
+    opt :passthrough,   "Set to a host:port, and unanswered queries will be sent there", :type => :string, :default => nil
     opt :packet_trace,  "If enabled, print details about the packets", :type => :boolean, :default => false
 
     opt :A,       "Response to send back for 'A' requests (must be a dotted ip address)", :type => :string,  :default => nil
@@ -44,8 +70,18 @@ module DnsUtils
     opt :ttl, "The TTL value to return", :type => :integer, :default => 60
   end
 
-  if(opts[:port] < 0 || opts[:port] > 65535)
+  if opts[:port] < 0 || opts[:port] > 65535
     Trollop::die(:port, "must be a valid port (between 0 and 65535)")
+  end
+
+  pt_host = pt_port = nil
+  if opts[:passthrough]
+    pt_host, pt_port = opts[:passthrough].split(/:/, 2)
+    if pt_port.nil?
+      pt_port = 53
+    else
+      pt_port = pt_port.to_i
+    end
   end
 
   puts("Starting #{MY_NAME} (#{NAME}) #{VERSION} DNS server on #{opts[:host]}:#{opts[:port]}")
@@ -131,7 +167,11 @@ module DnsUtils
     if answers.length > 0
       transaction.answer!(answers)
     else
-      transaction.error!(Nesser::RCODE_NAME_ERROR)
+      if pt_host
+        do_pt(s, transaction, pt_host, pt_port)
+      else
+        transaction.error!(Nesser::RCODE_NAME_ERROR)
+      end
     end
 
     puts("OUT: " + transaction.response.to_s(brief: !opts[:packet_trace]))
