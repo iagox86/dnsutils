@@ -7,19 +7,12 @@ See the Usage section below for details.
 
 ## Installation
 
-Add this line to your application's Gemfile:
-
-```ruby
-gem 'dnsutils'
-```
-
-And then execute:
-
-    $ bundle
-
-Or install it yourself as:
+Simply run:
 
     $ gem install dnsutils
+
+...as root, if you want it to install as a system utility. If you're using rvm,
+you probably don't need root.
 
 ## Usage
 
