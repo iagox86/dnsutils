@@ -8,13 +8,11 @@
 # Simply checks if you're the authoritative server.
 ##
 
-$LOAD_PATH << File.dirname(__FILE__) # A hack to make this work on 1.8/1.9
-
 require 'nesser'
 require 'socket'
 require 'trollop'
 
-require 'version'
+require_relative 'version'
 
 Thread.abort_on_exception = true
 

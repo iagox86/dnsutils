@@ -8,13 +8,11 @@
 # Implements a stupidly simple DNS server.
 ##
 
-$LOAD_PATH << File.dirname(__FILE__) # A hack to make this work on 1.8/1.9
-
 require 'nesser'
 require 'socket'
 require 'trollop'
 
-require 'version'
+require_relative 'version'
 
 module DnsUtils
   # version info
@@ -61,7 +59,7 @@ module DnsUtils
   puts("Starting #{MY_NAME} DNS server on #{opts[:host]}:#{opts[:port]}")
 
   s = UDPSocket.new()
-  dnser = Nesser::Nesser.new(s: s, host: opts[:host], port: opts[:port]) do |transaction|
+  nesser = Nesser::Nesser.new(s: s, host: opts[:host], port: opts[:port]) do |transaction|
     request = transaction.request
 
     if(request.questions.length < 1)
@@ -153,5 +151,5 @@ module DnsUtils
   end
 
   # Wait for it to finish (never-ending, essentially)
-  dnser.wait()
+  nesser.wait()
 end
