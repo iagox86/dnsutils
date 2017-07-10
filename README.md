@@ -230,4 +230,6 @@ There are no tests for these utilities, so be warned. :)
 
 ## Version history / changelog
 
+* 0.x and 1.x - Old versions - never built as gems
 * 2.0.0 - Initial port from the old DNS architecture
+* 2.0.1 - Small documentation updates
