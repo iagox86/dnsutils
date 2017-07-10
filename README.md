@@ -103,7 +103,9 @@ don't match one of the records you handle upstream:
 
     $ dnslogger --port 53535 --A 1.2.3.4 --passthrough 8.8.8.8:53
     Starting dnslogger (DnsUtils) 2.0.0 DNS server on 0.0.0.0:53535
-    
+
+And on the client:
+
     $ dig @localhost +short -t A -p 53535 google.com
     1.2.3.4
     $ dig @localhost +short -t MX -p 53535 google.com
@@ -115,6 +117,11 @@ don't match one of the records you handle upstream:
 
 That can be useful for stealth, although I kinda prefer using the :NXDomain
 approach, since it looks like literally nothing is there. :)
+
+Note that this only makes sense to use if you expect somebody to query you
+directly - you don't want to send your own authoritative requests upstream
+because that would cause an infinite loop. So definitely use passthrough
+sparingly. :)
 
 ### dnstest
 
