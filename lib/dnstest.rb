@@ -31,9 +31,9 @@ module DnsUtils
     version(MY_NAME)
 
     opt :version, "Get the #{MY_NAME} version (spoiler alert)", :type => :boolean, :default => false
-    opt :host,    "The ip address to listen on", :type => :string,  :default => "0.0.0.0"
-    opt :port,    "The port to listen on", :type => :integer, :default => 53
-    opt :domain,  "The domain to check", :type => :string,  :default => nil,      :required => true
+    opt :host, "The ip address to listen on", :type => :string, :default => "0.0.0.0"
+    opt :port, "The port to listen on", :type => :integer, :default => 53
+    opt :domain, "The domain to check", :type => :string, :default => nil, :required => true
     opt :timeout, "The amount of time (seconds) to wait for a response", :type => :integer, :default => 10
     opt :upstream, "The upstream DNS server to send requests to, host:port", :type => :string, :default => "8.8.8.8:53"
   end

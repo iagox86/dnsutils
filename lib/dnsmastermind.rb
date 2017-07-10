@@ -24,11 +24,11 @@ module DnsUtils
     version(MY_NAME)
 
     opt :version, "Get the #{MY_NAME} version (spoiler alert!)", :type => :boolean, :default => false
-    opt :host,    "The ip address to listen on", :type => :string,  :default => "0.0.0.0"
-    opt :port,    "The port to listen on", :type => :integer, :default => 53
+    opt :host, "The ip address to listen on", :type => :string, :default => "0.0.0.0"
+    opt :port, "The port to listen on", :type => :integer, :default => 53
     opt :timeout, "The amount of time (seconds) to wait for a response", :type => :integer, :default => 10
     opt :solution,"The answer; should be four letters, unless you're a jerk", :type => :string, :default => nil, :required => true
-    opt :win,     "The message to display to winners",                   :type => :string,  :default => "YOU WIN!!"
+    opt :win, "The message to display to winners", :type => :string, :default => "YOU WIN!!"
   end
 
   if(opts[:port] < 0 || opts[:port] > 65535)

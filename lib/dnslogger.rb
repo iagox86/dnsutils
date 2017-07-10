@@ -25,19 +25,19 @@ module DnsUtils
     version(MY_NAME)
 
     opt :version, "Get the #{MY_NAME} version (spoiler alert)", :type => :boolean, :default => false
-    opt :host,    "The ip address to listen on", :type => :string,  :default => "0.0.0.0"
-    opt :port,    "The port to listen on", :type => :integer, :default => 53
+    opt :host, "The ip address to listen on", :type => :string, :default => "0.0.0.0"
+    opt :port, "The port to listen on", :type => :integer, :default => 53
 
-    opt :passthrough,   "Set to a host:port, and unanswered queries will be sent there", :type => :string, :default => nil
-    opt :packet_trace,  "If enabled, print details about the packets", :type => :boolean, :default => false
+    opt :passthrough, "Set to a host:port, and unanswered queries will be sent there", :type => :string, :default => nil
+    opt :packet_trace, "If enabled, print details about the packets", :type => :boolean, :default => false
 
-    opt :A,       "Response to send back for 'A' requests (must be a dotted ip address)", :type => :string,  :default => nil
-    opt :AAAA,    "Response to send back for 'AAAA' requests (must be an ipv6 address)", :type => :string,  :default => nil
-    opt :CNAME,   "Response to send back for 'CNAME' requests (must be a dotted domain name)", :type => :string,  :default => nil
-    opt :TXT,     "Response to send back for 'TXT' requests",   :type => :string,  :default => nil
-    opt :MX,      "Response to send back for 'MX' requests (must be a dotted domain name)",    :type => :string,  :default => nil
-    opt :MX_PREF, "The preference order for the MX record (must be a number)",     :type => :integer, :default => 10
-    opt :NS,      "Response to send back for 'NS' requests (must be a dotted domain name)",    :type => :string,  :default => nil
+    opt :A, "Response to send back for 'A' requests (must be a dotted ip address)", :type => :string, :default => nil
+    opt :AAAA, "Response to send back for 'AAAA' requests (must be an ipv6 address)", :type => :string, :default => nil
+    opt :CNAME, "Response to send back for 'CNAME' requests (must be a dotted domain name)", :type => :string, :default => nil
+    opt :TXT, "Response to send back for 'TXT' requests",:type => :string, :default => nil
+    opt :MX, "Response to send back for 'MX' requests (must be a dotted domain name)", :type => :string, :default => nil
+    opt :MX_PREF, "The preference order for the MX record (must be a number)", :type => :integer, :default => 10
+    opt :NS, "Response to send back for 'NS' requests (must be a dotted domain name)", :type => :string, :default => nil
 
     opt :ttl, "The TTL value to return", :type => :integer, :default => 60
   end
