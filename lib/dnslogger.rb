@@ -22,32 +22,6 @@ module DnsUtils
 
   Thread.abort_on_exception = true
 
-  # Sends the query to an upstream DNS server
-  def self.do_pt(s, transaction, pt_host, pt_port)
-    # Do this in the background so it doesn't block
-    Thread.new() do
-      begin
-        result = Nesser::Nesser.query(
-          s: s,
-          hostname: transaction.request.questions[0].name,
-          server: pt_host,
-          port: pt_port,
-          type: transaction.request.questions[0].type,
-          cls: transaction.request.questions[0].cls,
-        )
-
-        if result.rcode == Nesser::RCODE_SUCCESS
-          transaction.answer!(result.answers)
-        else
-          transaction.error!(result.rcode)
-        end
-      rescue StandardError => e
-        puts("Error: #{e}")
-        transaction.error!(Nesser::RCODE_SERVER_FAILURE)
-      end
-    end
-  end
-
   # Options
   opts = Trollop::options do
     version(NAME + " " + VERSION)
@@ -166,15 +140,16 @@ module DnsUtils
     # Send back either the responses or an error code
     if answers.length > 0
       transaction.answer!(answers)
+      puts("OUT: " + transaction.response.to_s(brief: !opts[:packet_trace]))
     else
       if pt_host
-        do_pt(s, transaction, pt_host, pt_port)
+        transaction.passthrough!(host: pt_host, port: pt_port)
+        puts("OUT: [sent to #{pt_host}:#{pt_port}]")
       else
         transaction.error!(Nesser::RCODE_NAME_ERROR)
+        puts("OUT: " + transaction.response.to_s(brief: !opts[:packet_trace]))
       end
     end
-
-    puts("OUT: " + transaction.response.to_s(brief: !opts[:packet_trace]))
   end
 
   # Wait for it to finish (never-ending, essentially)
