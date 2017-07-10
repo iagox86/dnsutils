@@ -18,17 +18,17 @@ require 'version'
 
 module DnsUtils
   # version info
-  MY_NAME = "dnslogger"
+  MY_NAME = "dnslogger (#{NAME}) #{VERSION}"
 
   Thread.abort_on_exception = true
 
   # Options
   opts = Trollop::options do
-    version(NAME + " " + VERSION)
+    version(MY_NAME)
 
-    opt :version, "Get the #{NAME} version",      :type => :boolean, :default => false
-    opt :host,    "The ip address to listen on",  :type => :string,  :default => "0.0.0.0"
-    opt :port,    "The port to listen on",        :type => :integer, :default => 53
+    opt :version, "Get the #{MY_NAME} version (spoiler alert)", :type => :boolean, :default => false
+    opt :host,    "The ip address to listen on", :type => :string,  :default => "0.0.0.0"
+    opt :port,    "The port to listen on", :type => :integer, :default => 53
 
     opt :passthrough,   "Set to a host:port, and unanswered queries will be sent there", :type => :string, :default => nil
     opt :packet_trace,  "If enabled, print details about the packets", :type => :boolean, :default => false
@@ -58,7 +58,7 @@ module DnsUtils
     end
   end
 
-  puts("Starting #{MY_NAME} (#{NAME}) #{VERSION} DNS server on #{opts[:host]}:#{opts[:port]}")
+  puts("Starting #{MY_NAME} DNS server on #{opts[:host]}:#{opts[:port]}")
 
   s = UDPSocket.new()
   dnser = Nesser::Nesser.new(s: s, host: opts[:host], port: opts[:port]) do |transaction|
