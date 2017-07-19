@@ -33,6 +33,7 @@ module DnsUtils
 
     opt :A, "Response to send back for 'A' requests (must be a dotted ip address)", :type => :string, :default => nil
     opt :AAAA, "Response to send back for 'AAAA' requests (must be an ipv6 address)", :type => :string, :default => nil
+    opt :PTR, "Response to send back for 'PTR' requests (must be a dotted domain name)", :type => :string, :default => nil
     opt :CNAME, "Response to send back for 'CNAME' requests (must be a dotted domain name)", :type => :string, :default => nil
     opt :TXT, "Response to send back for 'TXT' requests",:type => :string, :default => nil
     opt :MX, "Response to send back for 'MX' requests (must be a dotted domain name)", :type => :string, :default => nil
@@ -93,6 +94,13 @@ module DnsUtils
       rrs << {
         rr: Nesser::AAAA.new(address: opts[:AAAA]),
         type: Nesser::TYPE_AAAA,
+      }
+    end
+
+    if (type == 'PTR' || type == 'ANY') && opts[:PTR]
+      rrs << {
+        rr: Nesser::PTR.new(name: opts[:PTR]),
+        type: Nesser::TYPE_PTR,
       }
     end
 
