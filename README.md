@@ -181,6 +181,17 @@ little message telling you so:
 
 And that's pretty much all there is to it!
 
+### dnslazy
+
+A simple utility that lets you put the IP address you want in the domain name.
+For example, 1.2.3.4.domain.com will resolve to 1.2.3.4.
+
+It's simply run with no special arguments
+
+    $ dnslazy
+
+It currently only supports IPv4.
+
 ### dnsmastermind
 
 `dnsmastermind` is a silly little game I wrote to demonstrate how DNS works.
@@ -234,3 +245,4 @@ There are no tests for these utilities, so be warned. :)
 * 2.0.0 - Initial port from the old DNS architecture
 * 2.0.1 - Small documentation updates
 * 2.0.2 - Add support for PTR records (reverse DNS)
+* 2.0.3 - Added dnslazy
