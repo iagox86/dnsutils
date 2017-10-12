@@ -246,3 +246,4 @@ There are no tests for these utilities, so be warned. :)
 * 2.0.1 - Small documentation updates
 * 2.0.2 - Add support for PTR records (reverse DNS)
 * 2.0.3 - Added dnslazy
+* 2.0.4 - Fixed dnslazy

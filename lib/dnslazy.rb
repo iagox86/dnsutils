@@ -1,11 +1,12 @@
 ##
-# dnslogger.rb
-# Created July 22, 2015
+# dnslazy.rb
+# Created October 12, 2017
 # By Ron Bowes
 #
 # See: LICENSE.md
 #
-# Implements a stupidly simple DNS server.
+# Implements a stupidly simple DNS server where the requester can pick the
+# address.
 ##
 
 require 'nesser'
