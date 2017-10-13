@@ -193,8 +193,8 @@ you can usually just run it with no arguments (unless you need a special port):
 Once it's up, you can query the DNS server and tell it what to respond with. For
 example, 1.2.3.4.domain.com will resolve to 1.2.3.4:
 
-    $ dig +short 8.8.8.8.skullseclabs.org
-    8.8.8.8
+    $ dig +short 1.2.3.4.skullseclabs.org
+    1.2.3.4
 
 As of v2.0.5, ipv6 is supported as well. Unfortunately, because DNS does not
 support a colon in the names, the colon must be replaced with a hyphen:
