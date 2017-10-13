@@ -184,13 +184,29 @@ And that's pretty much all there is to it!
 ### dnslazy
 
 A simple utility that lets you put the IP address you want in the domain name.
-For example, 1.2.3.4.domain.com will resolve to 1.2.3.4.
 
-It's simply run with no special arguments
+Running the tool is simple; use `--help` to get a full list of arguments, but
+you can usually just run it with no arguments (unless you need a special port):
 
     $ dnslazy
 
-It currently only supports IPv4.
+Once it's up, you can query the DNS server and tell it what to respond with. For
+example, 1.2.3.4.domain.com will resolve to 1.2.3.4:
+
+    $ dig +short 8.8.8.8.skullseclabs.org
+    8.8.8.8
+
+As of v2.0.5, ipv6 is supported as well. Unfortunately, because DNS does not
+support a colon in the names, the colon must be replaced with a hyphen:
+
+    $ dig +short 0--1.skullseclabs.org
+    ::1
+
+    $ dig +short 00-11-22-33-44-55-66-77.skullseclabs.org
+    0:11:22:33:44:55:66:77
+
+I'm not sure if others will find this tool useful, but it solves a quick problem
+I had!
 
 ### dnsmastermind
 
@@ -247,3 +263,4 @@ There are no tests for these utilities, so be warned. :)
 * 2.0.2 - Add support for PTR records (reverse DNS)
 * 2.0.3 - Added dnslazy
 * 2.0.4 - Fixed dnslazy
+* 2.0.5 - Added ipv6 support to dnslazy

@@ -59,34 +59,65 @@ module DnsUtils
     # Display the long or short version of the request
     puts("IN: " + request.to_s(brief: !opts[:packet_trace]))
 
-    segments = question.name.split(/\./)[0..3]
-    if segments.length != 4
-      puts("The request doesn't have enough segments! (should be a.b.c.d.domain.name)")
-      transaction.error!(Nesser::RCODE_NAME_ERROR)
-      next
-    end
+    name = question.name
+    answer = nil
 
-    bad = false
-    segments.each do |segment|
-      if segment !~ /^\d+$/ && !bad
-        puts("The request must start with an ip! (a.b.c.d.domain.name)")
-        bad = true
+    # ipv4
+    if name =~ /^\d+\.\d+\.\d+\.\d+\./
+      segments = question.name.split(/\./)[0..3]
+      if not segments.all? { |segment| segment =~ /^\d+$/ && segment.to_i >= 0 && segment.to_i <= 255 }
+        puts("Not sure how to handle name: #{name}")
+        transaction.error!(Nesser::RCODE_NAME_ERROR)
+        next
       end
-    end
-    if bad
+
+      answer = Nesser::Answer.new(
+        name: request.questions[0].name,
+        type: Nesser::TYPE_A,
+        cls: Nesser::CLS_IN,
+        ttl: 10,
+        rr: Nesser::A.new(address: segments.join('.')),
+      )
+
+    # ipv6 (less clean, will have to sanity check within)
+    elsif name =~ /[0-9a-f]*-[0-9a-f]*-.*\./
+      address = name.split(/\./)[0].gsub(/-/, ':')
+      segments = address.split(/:/)
+
+      if not segments.all? { |segment| segment =~ /^[0-9a-f]*$/ && (segment == '' || (segment.to_i(16) >= 0 && segment.to_i(16) <= 255)) }
+        puts("Not sure how to handle name: #{name} (invalid ipv6 address)")
+        transaction.error!(Nesser::RCODE_NAME_ERROR)
+        next
+      end
+      if segments.length > 8
+        puts("Not sure how to handle name: #{name} (too many ipv6 segments)")
+        transaction.error!(Nesser::RCODE_NAME_ERROR)
+        next
+      end
+      if segments.select { |segment| segment == '' }.length > 1
+        puts("Not sure how to handle name: #{name} (too many empty ipv6 segments)")
+        transaction.error!(Nesser::RCODE_NAME_ERROR)
+        next
+      end
+      if segments.select { |segment| segment == '' }.length == 0 && segments.length < 8
+        puts("Not sure how to handle name: #{name} (incomplete ipv6 address)")
+        transaction.error!(Nesser::RCODE_NAME_ERROR)
+        next
+      end
+
+      answer = Nesser::Answer.new(
+        name: request.questions[0].name,
+        type: Nesser::TYPE_AAAA,
+        cls: Nesser::CLS_IN,
+        ttl: 10,
+        rr: Nesser::AAAA.new(address: segments.join(':')),
+      )
+
+    else
+      puts("Not sure how to handle name: #{name}")
       transaction.error!(Nesser::RCODE_NAME_ERROR)
       next
     end
-
-    ip = segments.join('.')
-
-    answer = Nesser::Answer.new(
-      name: request.questions[0].name,
-      type: Nesser::TYPE_A,
-      cls: Nesser::CLS_IN,
-      ttl: 10,
-      rr: Nesser::A.new(address: ip),
-    )
 
     transaction.answer!([answer])
     puts("OUT: " + transaction.response.to_s(brief: !opts[:packet_trace]))
